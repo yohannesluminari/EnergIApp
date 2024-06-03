@@ -13,7 +13,7 @@
 	<artifactId>blog</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>U2_W3_D1_Security</name>
-	<description>Gestione di un blog con l&apos;applicazione di regole di
+	<description>Gestione di un app di Energia con l&apos;applicazione di regole di
 		autenticazione e di autorizzazione.</description>
 	<properties>
 		<java.version>17</java.version>
