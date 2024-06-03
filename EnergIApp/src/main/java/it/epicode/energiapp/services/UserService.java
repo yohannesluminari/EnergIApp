@@ -50,11 +50,28 @@ public class UserService implements UserDetailsService {
     }
 
     // POST id
-
+    @Transactional
+    public User createUser(User user) {
+        user.setPassword(bcrypt.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
 
     // PUT
-
+    @Transactional
+    public User updateUser(Long id, User userDetails) {
+        User user = getUserById(id);
+        user.setEmail(userDetails.getEmail());
+        user.setFirstName(userDetails.getFirstName());
+        user.setLastName(userDetails.getLastName());
+        user.setAvatar(userDetails.getAvatar());
+        user.setRole(userDetails.getRole());
+        return userRepository.save(user);
+    }
 
     // DELETE
+    @Transactional
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
 
 }

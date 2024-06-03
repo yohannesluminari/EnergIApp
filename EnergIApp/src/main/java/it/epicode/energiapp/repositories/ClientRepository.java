@@ -14,4 +14,14 @@ import java.util.List;
 public interface ClientRepository extends JpaRepository<Client, Long> {
     List<Client> findByCompanyNameContaining(String businessName);
 
+    Page<Client> findByAnnualRevenue(BigDecimal annualRevenue, Pageable pageable);
+    Page<Client> findByDateAdded(LocalDate dateAdded, Pageable pageable);
+    Page<Client> findByLastContactDate(LocalDate lastContactDate, Pageable pageable);
+    Page<Client> findByBusinessNameContaining(String businessName, Pageable pageable);
+
+    // Sorting methods
+    Page<Client> findAllByOrderByBusinessName(Pageable pageable);
+    Page<Client> findAllByOrderByAnnualRevenue(Pageable pageable);
+    Page<Client> findAllByOrderByDateAdded(Pageable pageable);
+    Page<Client> findAllByOrderByLastContactDate(Pageable pageable);
 }
