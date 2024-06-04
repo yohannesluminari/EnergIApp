@@ -17,20 +17,28 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    // GET http://localhost:8080/api/users
+
     @GetMapping
     public ResponseEntity<Page<User>> getAllUsers(Pageable pageable) {
         return ResponseEntity.ok(userService.getAllUsers(pageable));
     }
+
+    // GET http://localhost:8080/api/users/{id}
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
+    // POST http://localhost:8080/api/users
+
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
     }
+
+    // DELETE http://localhost:8080/api/users/{id}
 
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {

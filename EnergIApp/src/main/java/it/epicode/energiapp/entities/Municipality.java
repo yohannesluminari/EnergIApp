@@ -16,11 +16,10 @@ public class Municipality {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
 
     @ManyToOne
+    @JoinColumn(name = "province_id", nullable = false)
     private Province province;
-
-    public static class Invoice {
-    }
 }

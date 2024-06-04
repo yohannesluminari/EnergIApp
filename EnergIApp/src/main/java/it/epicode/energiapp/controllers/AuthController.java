@@ -16,9 +16,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/auth")
+
 public class AuthController {
     @Autowired
     private AuthService authService;
@@ -26,13 +29,16 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    // POST login
+    // POST http://localhost:8080/api/auth/login
+
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponseDTO> login(@RequestBody UserLoginRequestDTO loginPayload) {
         String token = authService.authenticateUserAndGenerateToken(loginPayload);
         UserLoginResponseDTO response = new UserLoginResponseDTO(token);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    // POST http://localhost:8080/api/auth/register
 
     @PostMapping("/register")
     public ResponseEntity<UserRegisterResponsePayloadDTO> register(@RequestBody @Validated UserRegisterRequestPayloadDTO registerPayload, BindingResult validation) {

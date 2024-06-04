@@ -61,7 +61,6 @@ public class UserService implements UserDetailsService {
     }
 
 
-
     // PUT
     @Transactional
     public User updateUser(Long id, User userDetails) {

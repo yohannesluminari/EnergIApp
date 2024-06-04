@@ -25,13 +25,10 @@ public class Province {
     @Column(nullable = false, length = 10)
     private String code;
 
-    // Aggiunto questo campo per far funzionare i csv
     @ManyToOne
-    @JoinColumn(name = "region_id")
+    @JoinColumn(name = "region_id", nullable = false)
     private Region region;
 
-    @OneToMany(mappedBy = "province", cascade = CascadeType.ALL)
-    private List<Municipality> municipalities;
-
-
+    // @OneToMany(mappedBy = "province", cascade = CascadeType.ALL, orphanRemoval = true)
+    // private List<Municipality> municipalities;
 }

@@ -26,11 +26,17 @@ public class RegionService {
         return regionRepository.findById(id).orElseThrow(() -> new NotFoundException("Region not found with id: " + id));
     }
 
+    public Region getRegionByName(String name) {
+        return regionRepository.findByName(name);
+    }
     // POST
 
     public Region saveRegion(Region region) {
         return regionRepository.save(region);
     }
 
+    public Region findByName(String name) {
+        return regionRepository.findByName(name);
+    }
 
 }
