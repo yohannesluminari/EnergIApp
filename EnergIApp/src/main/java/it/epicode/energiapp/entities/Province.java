@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,6 +30,6 @@ public class Province {
     @JoinColumn(name = "region_id", nullable = false)
     private Region region;
 
-    // @OneToMany(mappedBy = "province", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Municipality> municipalities;
+  //@OneToMany(mappedBy = "province", cascade = CascadeType.ALL, orphanRemoval = true)
+  //private List<Municipality> municipalities;
 }
