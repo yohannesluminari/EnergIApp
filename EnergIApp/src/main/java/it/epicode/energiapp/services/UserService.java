@@ -2,6 +2,7 @@ package it.epicode.energiapp.services;
 
 import it.epicode.energiapp.entities.User;
 import it.epicode.energiapp.exceptions.NotFoundException;
+import it.epicode.energiapp.payloads.UserRegisterResponsePayloadDTO;
 import it.epicode.energiapp.repositories.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
 
+
     // POST id
     @Transactional
     public User createUser(User user) {
@@ -58,11 +60,7 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    // SAVE USER
-    public void saveUser(User user) {
-        user.setPassword(bcrypt.encode(user.getPassword()));
-        userRepository.save(user);
-    }
+
 
     // PUT
     @Transactional
@@ -80,6 +78,12 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    // findByEmail(String email)
+    @Transactional(readOnly = true)
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Item with " + email + " not found."));
     }
 
 }

@@ -1,6 +1,7 @@
 
 package it.epicode.energiapp.controllers;
 
+import it.epicode.energiapp.entities.User;
 import it.epicode.energiapp.exceptions.BadRequestException;
 import it.epicode.energiapp.payloads.UserLoginRequestDTO;
 import it.epicode.energiapp.payloads.UserLoginResponseDTO;
@@ -15,7 +16,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
 public class AuthController {
     @Autowired
     private AuthService authService;
@@ -31,15 +34,32 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // POST register
-
     @PostMapping("/register")
     public ResponseEntity<UserRegisterResponsePayloadDTO> register(@RequestBody @Validated UserRegisterRequestPayloadDTO registerPayload, BindingResult validation) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors());
         }
 
-        UserRegisterResponsePayloadDTO response = userService.saveUser(registerPayload);
+        // Converte UserRegisterRequestPayloadDTO in User
+        User user = convertToUser(registerPayload);
+
+        // Salva l'utente utilizzando il metodo createUser del UserService
+        User savedUser = userService.createUser(user);
+
+        // Costruisce la risposta con l'ID dell'utente appena creato
+        UserRegisterResponsePayloadDTO response = new UserRegisterResponsePayloadDTO(savedUser.getId());
+
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    private User convertToUser(UserRegisterRequestPayloadDTO registerPayload) {
+        return User.builder()
+                .withFirstName(registerPayload.firstName())
+                .withLastName(registerPayload.lastName())
+                .withEmail(registerPayload.email())
+                .withPassword(registerPayload.password())
+                .withAvatar(registerPayload.avatar())
+                .withRole(registerPayload.role())
+                .build();
     }
 }

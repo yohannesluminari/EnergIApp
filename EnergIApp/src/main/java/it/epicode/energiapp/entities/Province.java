@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,5 +24,14 @@ public class Province {
 
     @Column(nullable = false, length = 10)
     private String code;
+
+    // Aggiunto questo campo per far funzionare i csv
+    @ManyToOne
+    @JoinColumn(name = "region_id")
+    private Region region;
+
+    @OneToMany(mappedBy = "province", cascade = CascadeType.ALL)
+    private List<Municipality> municipalities;
+
 
 }

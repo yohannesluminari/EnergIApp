@@ -4,13 +4,13 @@ package it.epicode.energiapp.entities;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import it.epicode.energiapp.entities.enumEntities.Role;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,6 +20,8 @@ import java.util.List;
 @Table(name="users")
 @Data
 @NoArgsConstructor
+@Builder(setterPrefix = "with")
+@AllArgsConstructor
 @JsonIgnoreProperties({"password", "role", "authorities", "accountNonExpired", "credentialsNonExpired", "accountNonLocked", "enabled"})
 
 // USERDETAILS è UN'INTERFACCIA CHE SERVE A PRENDERE I DETTAGLI DELL'AUTENTICAZIONE E AUTORIZZAZIONE

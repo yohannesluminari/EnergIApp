@@ -1,49 +1,95 @@
 package it.epicode.energiapp.csvManager;
 
+import it.epicode.energiapp.entities.Municipality;
 import it.epicode.energiapp.entities.Province;
-import it.epicode.energiapp.services.ProvinceService; // Import ProvinceService
+import it.epicode.energiapp.services.MunicipalityService;
+import it.epicode.energiapp.services.ProvinceService;
+import it.epicode.energiapp.services.RegionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
+
+@Component
 public class ProvinceCommunesCsvManager {
 
-    private final ProvinceService provinceService; // Inject ProvinceService
+    @Autowired
+    private RegionService regionService;
 
-    public ProvinceCommunesCsvManager(ProvinceService provinceService) {
-        this.provinceService = provinceService;
+    @Autowired
+    private MunicipalityService municipalityService;
+
+    @Autowired
+    private ProvinceService provinceService;
+
+    public void processCsvFiles(String provincesCsvFile, String regionsCsvFile, String municipalitiesCsvFile) {
+        // Carica le regioni e le associa alle province
+        Map<String, String> regionMap = loadRegions(regionsCsvFile);
+
+        // Carica i comuni e li associa alle province
+        loadMunicipalities(provincesCsvFile, municipalitiesCsvFile, regionMap);
     }
 
-    public void processCsvFile(String csvFile) {
-        List<Province> provinces = new ArrayList<>();
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(csvFile))) {
+    private void loadMunicipalities(String provincesCsvFile, String municipalitiesCsvFile, Map<String, String> regionMap) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(municipalitiesCsvFile))) {
             String line;
-            // Skip the header line
+            // Salta la riga dell'intestazione
             reader.readLine();
 
+            // Legge ogni riga del file CSV dei comuni
             while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                String provinceSigla = data[0];
-                String provinceName = data.length > 1 ? data[1] : ""; // Handle potential missing data
-                String region = data.length > 2 ? data[2] : ""; // Handle potential missing data
+                // Divide i dati della riga utilizzando il separatore ";" e li mette in un array
+                String[] data = line.split(";");
+                // Ottiene il codice della provincia (posizione 0 nell'array)
+                String provinceCode = data[0];
+                // Ottiene il nome del comune (posizione 2 nell'array)
+                String municipalityName = data[2];
 
-                // Assuming id is auto-generated (remove id from constructor)
-                Province province = new Province(provinceName, region);
-                provinces.add(province);
+                // Trova la provincia corrispondente utilizzando il codice della provincia
+                Province province = provinceService.getProvinceByCode(provinceCode);
+
+                // Crea un nuovo oggetto Municipality per il comune
+                Municipality municipality = new Municipality();
+                municipality.setName(municipalityName);
+                municipality.setProvince(province);
+
+                // Salva il comune utilizzando il servizio MunicipalityService
+                municipalityService.saveMunicipality(municipality);
             }
         } catch (IOException e) {
-            System.err.println("Error reading CSV file: " + e.getMessage());
+            System.err.println("Errore nella lettura del file CSV dei comuni: " + e.getMessage());
+        }
+    }
+
+    private Map<String, String> loadRegions(String regionsCsvFile) {
+        Map<String, String> regionMap = new HashMap<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(regionsCsvFile))) {
+            String line;
+            // Salta la riga dell'intestazione
+            reader.readLine();
+
+            // Legge ogni riga del file CSV delle regioni
+            while ((line = reader.readLine()) != null) {
+                // Divide i dati della riga utilizzando il separatore ";" e li mette in un array
+                String[] data = line.split(";");
+                // Ottiene il codice della provincia (posizione 0 nell'array)
+                String provinceCode = data[0];
+                // Ottiene il nome della regione (posizione 1 nell'array)
+                String regionName = data[1];
+
+                // Associa il nome della regione al codice della provincia
+                regionMap.put(provinceCode, regionName);
+            }
+        } catch (IOException e) {
+            System.err.println("Errore nella lettura del file CSV delle regioni: " + e.getMessage());
         }
 
-        // Save provinces to database using ProvinceService
-        for (Province province : provinces) {
-            provinceService.saveProvince(province);
-        }
-
-        System.out.println("Successfully processed CSV file and saved provinces to database.");
+        return regionMap;
     }
 }

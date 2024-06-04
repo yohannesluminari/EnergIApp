@@ -25,6 +25,11 @@ public class ProvinceService {
         return provinceRepository.findById(id).orElseThrow(() -> new NotFoundException("Province not found with id: " + id));
     }
 
+    public Province getProvinceByCode(String code) {
+        return provinceRepository.findByCode(code)
+                .orElseThrow(() -> new NotFoundException("Province not found with code: " + code));
+    }
+
     // POST
 
     public Province saveProvince(Province province) {
