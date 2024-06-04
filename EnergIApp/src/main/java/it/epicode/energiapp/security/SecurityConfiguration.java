@@ -23,6 +23,8 @@ import java.util.Arrays;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
+    
+    // CORS CONFIGURATION, SERVE PER COLLEGARE FRONTEND A BACKEND
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfig = new CorsConfiguration();
@@ -34,7 +36,7 @@ public class SecurityConfiguration {
         return corsConfigurationSource;
     }
 
-    // JWT token configuration
+    // JWT TOKEN CONFIGURATION
 
     @Bean
     public JWTAuthFilter jwtAuthFilter() {

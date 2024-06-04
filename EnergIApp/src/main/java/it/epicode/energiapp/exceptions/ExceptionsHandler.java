@@ -53,4 +53,12 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
         return responseEntity;
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    protected ResponseEntity<ExceptionResponseDTO> handleUnauthorizedException(UnauthorizedException e) {
+        ExceptionResponseDTO payload = new ExceptionResponseDTO(e.getMessage(), HttpStatus.NO_CONTENT, LocalDateTime.now());
+        ResponseEntity<ExceptionResponseDTO> responseEntity = new ResponseEntity<>(payload, HttpStatus.NO_CONTENT);
+        return responseEntity;
+    }
+
 }

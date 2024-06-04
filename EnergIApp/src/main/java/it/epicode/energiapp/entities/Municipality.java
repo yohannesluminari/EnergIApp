@@ -20,7 +20,6 @@ public class Municipality {
 
     @ManyToOne
     private Province province;
-    // Getters, Setters, Constructors, equals, hashCode
 
     public static class Invoice {
     }

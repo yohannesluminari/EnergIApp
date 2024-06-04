@@ -58,6 +58,12 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
+    // SAVE USER
+    public void saveUser(User user) {
+        user.setPassword(bcrypt.encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
     // PUT
     @Transactional
     public User updateUser(Long id, User userDetails) {

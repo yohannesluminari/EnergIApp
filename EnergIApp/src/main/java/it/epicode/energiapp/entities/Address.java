@@ -29,8 +29,6 @@ public class Address {
     @Column(nullable = false, length = 10)
     private String zipCode;
 
-
-
     @ManyToOne
     private Municipality municipality;
 

@@ -1,12 +1,12 @@
 package it.epicode.energiapp.entities;
 
 
+import it.epicode.energiapp.entities.enumEntities.ClientType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -41,7 +41,7 @@ public class Client {
 
     private String pec;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 80)
     private String phone;
 
     private String contactEmail;
@@ -50,11 +50,14 @@ public class Client {
 
     private String contactLastName;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 80)
     private String contactPhone;
 
     private String companyLogo;
 
+    // companyName aggiunta per correwgggere errore in console
+    @Column(name = "company_name") // Assicurati che il nome della colonna nel database sia corretto
+    private String companyName;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<Address> addresses;
@@ -63,6 +66,5 @@ public class Client {
     private List<Invoice> invoices;
 
     @Enumerated(EnumType.STRING)
-    private RedisProperties.ClientType clientType;
-    // Getters, Setters, Constructors, equals, hashCode
+    private ClientType clientType;
 }
