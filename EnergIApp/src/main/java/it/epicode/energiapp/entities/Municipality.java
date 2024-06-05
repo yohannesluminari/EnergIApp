@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name ="municipalities")
+@Table(name = "municipalities")
 @Data
 @Builder(setterPrefix = "with")
 public class Municipality {
@@ -19,7 +19,16 @@ public class Municipality {
 
     private String name;
 
+    private String code; // Campo aggiunto per il codice del comune
+
     @ManyToOne
     @JoinColumn(name = "province_id", nullable = false)
     private Province province;
+
+    // Costruttore aggiunto per accettare nome e provincia
+    public Municipality(String name, String code, Province province) {
+        this.name = name;
+        this.code = code;
+        this.province = province;
+    }
 }

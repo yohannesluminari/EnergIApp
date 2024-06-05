@@ -20,37 +20,32 @@ import java.util.stream.Collectors;
 
 @Service
 public class MunicipalityService {
-    
+
     @Autowired
     private MunicipalityRepository municipalityRepository;
 
     @Autowired
     private ProvinceService provinceService;
 
-    Pageable pageable = PageRequest.of(0, 10);
-
-    private static final Path filePath = Path.of("/Users/alicelazzeri/Desktop/Modulo JAVA/build-week-java-II/EnergIApp/EnergIApp/src/main/resources/data/comuni-italiani.csv");
-
     // GET all
-
     public Page<Municipality> getAllMunicipalities(Pageable pageable) {
+        if (pageable == null) {
+            pageable = PageRequest.of(0, Integer.MAX_VALUE); // Default Pageable
+        }
         return municipalityRepository.findAll(pageable);
     }
-    
+
     // GET id
-    
     public Municipality getMunicipalityById(long id) {
         return municipalityRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
     }
 
     // POST
-
     public Municipality saveMunicipality(Municipality municipality) {
         return municipalityRepository.save(municipality);
     }
 
     // PUT
-
     public Municipality updateMunicipality(long id, Municipality updatedMunicipality) {
         Municipality municipalityToBeUpdated = this.getMunicipalityById(id);
         municipalityToBeUpdated.setName(updatedMunicipality.getName());
@@ -59,17 +54,25 @@ public class MunicipalityService {
     }
 
     // DELETE
-
     public void deleteMunicipality(long id) {
         municipalityRepository.deleteById(id);
     }
 
-    // UPLOAD MUNICIPALITIES
+    // Save all municipalities
+    public void saveAllMunicipalities(List<Municipality> municipalities) {
+        for (Municipality municipality : municipalities) {
+            if (municipality.getProvince() == null) {
+                throw new IllegalArgumentException("Province cannot be null");
+            }
+            municipalityRepository.save(municipality);
+        }
+    }
 
+    // UPLOAD MUNICIPALITIES
     public List<Municipality> uploadMunicipality(Path filePath) throws IOException {
         List<Municipality> municipalities;
         try {
-            Page<Province> provinces = provinceService.getAllProvinces(pageable);
+            Page<Province> provinces = provinceService.getAllProvinces(PageRequest.of(0, Integer.MAX_VALUE));
             Map<String, Province> provinceMap = provinces.stream()
                     .collect(Collectors.toMap(Province::getCode, province -> province));
 
@@ -86,6 +89,7 @@ public class MunicipalityService {
                             throw new RuntimeException("Province not found for code: " + provinceCode);
                         }
                     })
+
                     .collect(Collectors.toList());
 
             municipalityRepository.saveAll(municipalities);
@@ -94,5 +98,4 @@ public class MunicipalityService {
         }
         return municipalities;
     }
-
 }

@@ -7,15 +7,15 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-@Order(2)
-public class MunicipalityRunner implements CommandLineRunner {
+@Order(1)
+public class ProvinceRunner implements CommandLineRunner {
 
     @Autowired
     private CsvService csvService;
 
     @Override
     public void run(String... args) throws Exception {
-        String municipalityCsvFilePath = "D:/BackendBWTeam3/EnergIApp/src/main/resources/data/comuni-italiani.csv";
-        csvService.loadMunicipalitiesFromCsv(municipalityCsvFilePath);
+        String provinceCsvFilePath = "D:/BackendBWTeam3/EnergIApp/src/main/resources/data/province-italiane.csv";
+        csvService.loadProvincesFromCsv(provinceCsvFilePath);
     }
 }

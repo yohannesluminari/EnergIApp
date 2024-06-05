@@ -48,13 +48,15 @@ public class AddressesRunner implements CommandLineRunner {
 
         for (int j = 0; j < 5; j++) {
 
+            Municipality municipality = municipalities.get(faker.number().numberBetween(0, municipalityPage.getNumberOfElements()));
+
             Address address = Address.builder()
                     .withStreet(faker.address().streetName())
                     .withStreetNumber(faker.address().streetAddressNumber())
-                    .withLocality(faker.address().city())
+                    .withLocality(municipality.getName())
                     .withZipCode(faker.address().zipCode())
                     .withClient(clients.get(faker.number().numberBetween(0, clientPage.getNumberOfElements())))
-                    .withMunicipality(municipalities.get(faker.number().numberBetween(0, municipalityPage.getNumberOfElements())))
+                    .withMunicipality(municipality)
                     .build();
 
             addressService.saveAddress(address);
