@@ -5,11 +5,15 @@ import it.epicode.energiapp.entities.Province;
 import it.epicode.energiapp.exceptions.NoContentException;
 import it.epicode.energiapp.services.ProvinceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.nio.file.Path;
 
 @RestController
 @RequestMapping("/api/provinces")
@@ -17,6 +21,9 @@ public class ProvinceController {
 
     @Autowired
     private ProvinceService provinceService;
+
+    @Value("${csv_province}")
+    private String provinceFile;
 
     // GET http://localhost:8080/api/provinces
 
@@ -61,6 +68,14 @@ public class ProvinceController {
     public ResponseEntity<Void> deleteProvince(@PathVariable Long id) {
         provinceService.deleteProvince(id);
         return ResponseEntity.noContent().build();
+    }
+
+    //  // POST http://localhost:8080/api/provinces/load-province
+
+    @PostMapping("/load-province")
+    public String importProvince() throws IOException {
+        provinceService.uploadProvince(Path.of(provinceFile));
+        return "Provinces successfully imported from file";
     }
 }
 

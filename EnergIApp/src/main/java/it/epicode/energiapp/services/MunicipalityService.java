@@ -1,18 +1,35 @@
 package it.epicode.energiapp.services;
 
 import it.epicode.energiapp.entities.Municipality;
+import it.epicode.energiapp.entities.Province;
 import it.epicode.energiapp.exceptions.NotFoundException;
 import it.epicode.energiapp.repositories.MunicipalityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class MunicipalityService {
     
     @Autowired
     private MunicipalityRepository municipalityRepository;
+
+    @Autowired
+    private ProvinceService provinceService;
+
+    Pageable pageable = PageRequest.of(0, 10);
+
+    private static final Path filePath = Path.of("/Users/alicelazzeri/Desktop/Modulo JAVA/build-week-java-II/EnergIApp/EnergIApp/src/main/resources/data/comuni-italiani.csv");
 
     // GET all
 
@@ -47,5 +64,35 @@ public class MunicipalityService {
         municipalityRepository.deleteById(id);
     }
 
+    // UPLOAD MUNICIPALITIES
+
+    public List<Municipality> uploadMunicipality(Path filePath) throws IOException {
+        List<Municipality> municipalities;
+        try {
+            Page<Province> provinces = provinceService.getAllProvinces(pageable);
+            Map<String, Province> provinceMap = provinces.stream()
+                    .collect(Collectors.toMap(Province::getCode, province -> province));
+
+            municipalities = Files.lines(filePath, StandardCharsets.ISO_8859_1)
+                    .skip(1)
+                    .map(line -> line.split(";"))
+                    .map(columns -> {
+                        String municipalityName = columns[0];
+                        String provinceCode = columns[1];
+                        Province province = provinceMap.get(provinceCode);
+                        if (province != null) {
+                            return new Municipality(null, municipalityName, province);
+                        } else {
+                            throw new RuntimeException("Province not found for code: " + provinceCode);
+                        }
+                    })
+                    .collect(Collectors.toList());
+
+            municipalityRepository.saveAll(municipalities);
+        } catch (IOException err) {
+            throw err;
+        }
+        return municipalities;
+    }
 
 }
