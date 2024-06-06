@@ -1,6 +1,5 @@
 package it.epicode.energiapp.controllers;
 
-import it.epicode.energiapp.entities.Address;
 import it.epicode.energiapp.entities.Province;
 import it.epicode.energiapp.exceptions.NoContentException;
 import it.epicode.energiapp.services.ProvinceService;

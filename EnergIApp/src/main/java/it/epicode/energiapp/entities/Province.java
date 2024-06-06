@@ -1,6 +1,5 @@
 package it.epicode.energiapp.entities;
 
-import it.epicode.energiapp.controllers.MunicipalityController;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +26,7 @@ public class Province {
     @Column(nullable = false)
     private String code;
 
-   //@OneToMany(mappedBy = "province", cascade = CascadeType.ALL, orphanRemoval = true)
-   //private List<Municipality> municipalities;
+   @OneToMany(mappedBy = "province", cascade = CascadeType.ALL, orphanRemoval = true)
+   private List<Municipality> municipalities;
 
 }

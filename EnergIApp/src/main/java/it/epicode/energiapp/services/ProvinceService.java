@@ -22,7 +22,8 @@ public class ProvinceService {
     @Autowired
     private ProvinceRepository provinceRepository;
 
-    static final Path filePath = Path.of("src/main/resources/data/province-italiane.csv");
+    public static final Path filePath = Path.of("D:\\BackendBWTeam3\\EnergIApp\\src\\main\\resources\\data\\province-italiane.csv");
+
 
     // GET all
     public Page<Province> getAllProvinces(Pageable pageable) {

@@ -1,6 +1,6 @@
 package it.epicode.energiapp.runners;
 
-import it.epicode.energiapp.csvManager.CsvService;
+import it.epicode.energiapp.services.MunicipalityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
@@ -11,11 +11,13 @@ import org.springframework.stereotype.Component;
 public class MunicipalityRunner implements CommandLineRunner {
 
     @Autowired
-    private CsvService csvService;
+    private MunicipalityService municipalityService;
 
     @Override
     public void run(String... args) throws Exception {
-        String municipalityCsvFilePath = "D:/BackendBWTeam3/EnergIApp/src/main/resources/data/comuni-italiani.csv";
-        csvService.loadMunicipalitiesFromCsv(municipalityCsvFilePath);
+        // Carica tutti i comuni dal file CSV al momento dell'avvio dell'applicazione
+        municipalityService.uploadMunicipality();
+        System.out.println("Municipalities successfully loaded from file");
     }
+
 }

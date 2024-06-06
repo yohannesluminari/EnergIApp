@@ -74,8 +74,9 @@ public class MunicipalityController {
 
     @PostMapping("/load-municipality")
     public String importMunicipality() throws IOException {
-        municipalityService.uploadMunicipality(Path.of(municipalityFile));
+        municipalityService.uploadMunicipality();
         return "Municipalities successfully imported from file";
     }
+
 }
 
