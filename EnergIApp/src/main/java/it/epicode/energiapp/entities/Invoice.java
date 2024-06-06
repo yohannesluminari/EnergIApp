@@ -22,7 +22,6 @@ public class Invoice {
     private Long id;
     private LocalDate date;
     private BigDecimal amount;
-    private String number;
 
     @ManyToOne
     private Client client;

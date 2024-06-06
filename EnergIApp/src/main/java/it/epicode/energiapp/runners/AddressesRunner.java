@@ -9,14 +9,15 @@ import it.epicode.energiapp.services.ClientService;
 import it.epicode.energiapp.services.MunicipalityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.data.domain.Page;
+import org.springframework.core.annotation.Order;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Random;
 
 @Component
+@Order(4)
 public class AddressesRunner implements CommandLineRunner {
 
     @Autowired
@@ -30,35 +31,30 @@ public class AddressesRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // Fetch all clients
+        List<Client> clients = clientService.findAllClients(PageRequest.of(0, Integer.MAX_VALUE)).getContent();
 
+        // Fetch all municipalities
+        List<Municipality> municipalities = municipalityService.getAllMunicipalities(PageRequest.of(0, Integer.MAX_VALUE)).getContent();
+
+        // Random generator
+        Random random = new Random();
         Faker faker = new Faker();
-        Pageable pageable = PageRequest.of(0, 10); // 10 elementi per pagina
 
-        Page<Client> clientPage = clientService.findAllClients(pageable);
-        Page<Municipality> municipalityPage = municipalityService.getAllMunicipalities(pageable);
+        for (Client client : clients) {
+            // Select a random municipality
+            Municipality municipality = municipalities.get(random.nextInt(municipalities.size()));
 
-        List<Client> clients = clientPage.getContent();
-        List<Municipality> municipalities = municipalityPage.getContent();
-
-        // Controlla se ci sono elementi nelle liste
-        if (clients.isEmpty() || municipalities.isEmpty()) {
-            System.out.println("No enough data to create addresses");
-            return;
-        }
-
-        for (int j = 0; j < 5; j++) {
-
-            Municipality municipality = municipalities.get(faker.number().numberBetween(0, municipalityPage.getNumberOfElements()));
-
+            // Create a new address
             Address address = Address.builder()
                     .withStreet(faker.address().streetName())
-                    .withStreetNumber(faker.address().streetAddressNumber())
-                    .withLocality(municipality.getName())
+                    .withStreetNumber(faker.address().buildingNumber())
+                    .withLocality(faker.address().city())
                     .withZipCode(faker.address().zipCode())
-                    .withClient(clients.get(faker.number().numberBetween(0, clientPage.getNumberOfElements())))
                     .withMunicipality(municipality)
+                    .withClient(client)
                     .build();
-
+            // Save the address
             addressService.saveAddress(address);
         }
     }

@@ -6,12 +6,14 @@ import it.epicode.energiapp.entities.enumEntities.ClientType;
 import it.epicode.energiapp.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Component
+@Order(3)
 public class ClientsRunner implements CommandLineRunner {
 
     @Autowired

@@ -60,7 +60,6 @@ public class ClientService {
         return clientRepository.save(client);
     }
 
-
     // DELETE
     public void deleteClient(Long id) {
         clientRepository.deleteById(id);
