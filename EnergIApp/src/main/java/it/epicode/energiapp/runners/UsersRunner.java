@@ -26,7 +26,7 @@ public class UsersRunner implements CommandLineRunner {
             user.setAvatar(faker.internet().avatar());
             user.setRole(Role.USER);
 
-            userService.createUser(user);
+            userService.saveUser(user);
         }
     }
 }

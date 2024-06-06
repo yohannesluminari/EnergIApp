@@ -1,23 +1,22 @@
 package it.epicode.energiapp.services;
 
 import it.epicode.energiapp.entities.User;
+import it.epicode.energiapp.entities.enumEntities.Role;
+import it.epicode.energiapp.exceptions.BadRequestException;
 import it.epicode.energiapp.exceptions.NotFoundException;
-import it.epicode.energiapp.payloads.UserRegisterResponsePayloadDTO;
+import it.epicode.energiapp.payloads.UserRegisterRequestPayloadDTO;
 import it.epicode.energiapp.repositories.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -25,64 +24,77 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder bcrypt;
 
-    // loadByUsername(String email) overriding
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getEmail())
-                .password(user.getPassword())
-                .authorities(user.getAuthorities())
-                .build();
-    }
-
-    // GET all
-
     @Transactional(readOnly = true)
     public Page<User> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
 
-    // GET id
     @Transactional(readOnly = true)
-    public User getUserById(long id) {
-        return userRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+    public Optional<User> getUserById(long id) {
+        return userRepository.findById(id);
     }
 
-
-    // POST id
     @Transactional
-    public User createUser(User user) {
-        user.setPassword(bcrypt.encode(user.getPassword()));
-        return userRepository.save(user);
+    public String saveUser(UserRegisterRequestPayloadDTO userDto){
+
+        Optional<User> existingUser = userRepository.findByEmail(userDto.email());
+        if (existingUser.isPresent()) {
+            throw new BadRequestException("User with this email already exists");
+        }
+        User user = new User();
+        user.setFirstName(userDto.firstName());
+        user.setLastName(userDto.lastName());
+        user.setEmail(userDto.email());
+        user.setRole(Role.USER);
+        user.setPassword(bcrypt.encode(userDto.password()));
+
+        userRepository.save(user);
+
+        return "User with id: " + user.getId() + " correctly saved";
     }
 
-
-    // PUT
     @Transactional
-    public User updateUser(Long id, User userDetails) {
-        User user = getUserById(id);
-        user.setEmail(userDetails.getEmail());
-        user.setFirstName(userDetails.getFirstName());
-        user.setLastName(userDetails.getLastName());
-        user.setAvatar(userDetails.getAvatar());
-        user.setRole(userDetails.getRole());
-        return userRepository.save(user);
+    public User updateUser(int id, UserRegisterRequestPayloadDTO userDto){
+        Optional<User> userOptional = getUserById(id);
+
+        if (userOptional.isPresent()){
+            User user = userOptional.get();
+            user.setFirstName(userDto.firstName());
+            user.setLastName(userDto.lastName());
+            user.setEmail(userDto.email());
+            user.setPassword(bcrypt.encode(userDto.password()));
+
+            return userRepository.save(user);
+        }
+        else {
+            throw new NotFoundException("User with id: " + id + " not found");
+        }
     }
 
-    // DELETE
+
     @Transactional
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public String deleteUser(Long id) {
+        Optional<User> userOptional = getUserById(id);
+
+        if(userOptional.isPresent()){
+            userRepository.deleteById(id);
+            return "User with id: " + id + " correctly deleted";
+        }
+        else{
+            throw new NotFoundException("User with id: " + id + " not found");
+        }
     }
 
-    // findByEmail(String email)
+
     @Transactional(readOnly = true)
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Item with " + email + " not found."));
-    }
+        Optional<User> userOptional = userRepository.findByEmail(email);
 
+        if (userOptional.isPresent()){
+            return userOptional.get();
+        }
+        else {
+            throw new NotFoundException("User with email: " + email + " not found");
+        }
+    }
 }

@@ -21,8 +21,6 @@ public record UserRegisterRequestPayloadDTO(
         @NotNull(message = "User password is mandatory")
         @NotEmpty(message = "User password cannot be empty")
         @Size(min = 8, message = "User password must contain at least 8 characters")
-        String password,
-        String avatar,
-        Role role
+        String password
 ) {
 }

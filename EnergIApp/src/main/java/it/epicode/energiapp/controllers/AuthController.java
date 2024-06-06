@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 
 public class AuthController {
     @Autowired
@@ -41,31 +43,17 @@ public class AuthController {
     // POST http://localhost:8080/api/auth/register
 
     @PostMapping("/register")
-    public ResponseEntity<UserRegisterResponsePayloadDTO> register(@RequestBody @Validated UserRegisterRequestPayloadDTO registerPayload, BindingResult validation) {
+    public ResponseEntity<String> register(
+            @RequestBody @Validated UserRegisterRequestPayloadDTO registerPayload,
+            BindingResult validation) {
+
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors());
         }
 
-        // Converte UserRegisterRequestPayloadDTO in User
-        User user = convertToUser(registerPayload);
+        String result = userService.saveUser(registerPayload);
 
-        // Salva l'utente utilizzando il metodo createUser del UserService
-        User savedUser = userService.createUser(user);
-
-        // Costruisce la risposta con l'ID dell'utente appena creato
-        UserRegisterResponsePayloadDTO response = new UserRegisterResponsePayloadDTO(savedUser.getId());
-
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
-    private User convertToUser(UserRegisterRequestPayloadDTO registerPayload) {
-        return User.builder()
-                .withFirstName(registerPayload.firstName())
-                .withLastName(registerPayload.lastName())
-                .withEmail(registerPayload.email())
-                .withPassword(registerPayload.password())
-                .withAvatar(registerPayload.avatar())
-                .withRole(registerPayload.role())
-                .build();
-    }
 }

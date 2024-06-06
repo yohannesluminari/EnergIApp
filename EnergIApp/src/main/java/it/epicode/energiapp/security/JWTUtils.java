@@ -14,28 +14,22 @@ import java.util.Date;
 @Component
 public class JWTUtils {
     @Value("${jwt.secret}")
-    private String secretKey;
+    private String secret;
+    @Value("${jwt.expirationMs}")
+    private long duration;
 
     public String createToken(User user) {
-        return Jwts.builder()
-                .issuedAt(
-                        new Date(
-                                System.currentTimeMillis()))
-                .expiration(
-                        new Date(
-                                System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7))
-                .subject(
-                        String.valueOf(
-                                user.getId()))
-                .signWith(
-                        Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .compact();
+        return Jwts.builder().issuedAt(new Date(System.currentTimeMillis())).
+                expiration(new Date(System.currentTimeMillis() + duration)).
+                subject(String.valueOf(user.getId())).
+                signWith(Keys.hmacShaKeyFor(secret.getBytes())).
+                compact();
     }
 
     public void verifyToken(String token) {
         try {
-            Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                    .build().parse(token);
+            Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).
+                    build().parse(token);
         } catch (MalformedJwtException e) {
             throw new UnauthorizedException("Token is not valid.");
         } catch (ExpiredJwtException e) {
@@ -45,8 +39,8 @@ public class JWTUtils {
         }
     }
 
-    public String extractIdFromToken(String token) {
-        return Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .build().parseSignedClaims(token).getPayload().getSubject();
+    public int extractIdFromToken(String token) {
+        return Integer.parseInt(Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).
+                build().parseSignedClaims(token).getPayload().getSubject());
     }
 }
