@@ -1,5 +1,7 @@
 package it.epicode.energiapp.runners;
 
+
+
 import com.github.javafaker.Faker;
 import it.epicode.energiapp.entities.Client;
 import it.epicode.energiapp.entities.Invoice;
@@ -13,8 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZoneId;
+
 import java.util.List;
 import java.util.Random;
 
