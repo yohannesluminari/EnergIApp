@@ -30,7 +30,7 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    // POST http://localhost:8080/api/auth/login
+    // POST http://localhost:8080/auth/login
 
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponseDTO> login(@RequestBody UserLoginRequestDTO loginPayload) {
@@ -39,7 +39,7 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // POST http://localhost:8080/api/auth/register
+    // POST http://localhost:8080/auth/register
 
     @PostMapping("/register")
     public ResponseEntity<String> register(
