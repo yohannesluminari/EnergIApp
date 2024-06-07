@@ -8,11 +8,5 @@ public record ExceptionResponseDTO(
         String message,
         HttpStatus httpStatus,
         LocalDateTime createdAt
-
 ) {
-    public ExceptionResponseDTO(String message, HttpStatus httpStatus, LocalDateTime createdAt) {
-        this.message = message;
-        this.httpStatus = httpStatus;
-        this.createdAt = createdAt;
-    }
 }

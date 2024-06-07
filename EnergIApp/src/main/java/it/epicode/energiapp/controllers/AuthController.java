@@ -1,12 +1,11 @@
 
 package it.epicode.energiapp.controllers;
 
-import it.epicode.energiapp.entities.User;
+
 import it.epicode.energiapp.exceptions.BadRequestException;
 import it.epicode.energiapp.payloads.UserLoginRequestDTO;
 import it.epicode.energiapp.payloads.UserLoginResponseDTO;
 import it.epicode.energiapp.payloads.UserRegisterRequestPayloadDTO;
-import it.epicode.energiapp.payloads.UserRegisterResponsePayloadDTO;
 import it.epicode.energiapp.services.AuthService;
 import it.epicode.energiapp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

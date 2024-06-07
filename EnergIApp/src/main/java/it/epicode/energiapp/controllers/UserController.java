@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,17 +45,12 @@ public class UserController {
     public ResponseEntity<User> updateUser(
             @PathVariable Long id,
             @RequestBody @Validated UserRegisterRequestPayloadDTO userDto,
-            BindingResult bindingResult) {
+            BindingResult validation) {
 
-        if (bindingResult.hasErrors()) {
-            // Se ci sono errori di validazione, lancia una BadRequestException
-            String errorMessages = bindingResult.getAllErrors().stream()
-                    .map(ObjectError::getDefaultMessage)
-                    .reduce("", (s, s2) -> s + s2);
-            throw new BadRequestException(errorMessages);
+        if (validation.hasErrors()) {
+            throw new BadRequestException(validation.getAllErrors());
         }
 
-        // Aggiorna l'utente e restituisci lo stato HTTP 200 OK con l'utente aggiornato
         User updatedUser = userService.updateUser(id, userDto);
         return ResponseEntity.ok(updatedUser);
     }

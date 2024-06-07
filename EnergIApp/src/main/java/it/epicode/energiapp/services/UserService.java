@@ -54,7 +54,7 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(int id, UserRegisterRequestPayloadDTO userDto){
+    public User updateUser(long id, UserRegisterRequestPayloadDTO userDto){
         Optional<User> userOptional = getUserById(id);
 
         if (userOptional.isPresent()){
