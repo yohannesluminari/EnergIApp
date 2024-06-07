@@ -28,7 +28,7 @@ public class MunicipalityService {
     @Autowired
     private ProvinceService provinceService;
 
-    public static final Path FILE_PATH = Paths.get("D:\\BackendBWTeam3\\EnergIApp\\src\\main\\resources\\data\\comuni-italiani.csv");
+    public static final Path FILE_PATH = Paths.get("C:\\Users\\simon\\Desktop\\Buildweek5\\EnergIApp\\src\\main\\resources\\data\\comuni-italiani.csv");
 
     public static Path getFilePath() {
         return FILE_PATH;

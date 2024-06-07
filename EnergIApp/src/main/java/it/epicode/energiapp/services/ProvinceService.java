@@ -22,7 +22,7 @@ public class ProvinceService {
     @Autowired
     private ProvinceRepository provinceRepository;
 
-    public static final Path filePath = Path.of("D:\\BackendBWTeam3\\EnergIApp\\src\\main\\resources\\data\\province-italiane.csv");
+    public static final Path filePath = Path.of("C:\\Users\\simon\\Desktop\\Buildweek5\\EnergIApp\\src\\main\\resources\\data\\province-italiane.csv");
 
 
     // GET all

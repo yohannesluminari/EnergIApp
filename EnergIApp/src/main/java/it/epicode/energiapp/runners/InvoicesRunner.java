@@ -41,7 +41,7 @@ public class InvoicesRunner implements CommandLineRunner {
         for (Client client : clients) {
             for (int j = 0; j < 10; j++) {
                 Invoice invoice = Invoice.builder()
-                        .withDate(faker.date().past(365, java.util.concurrent.TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+                        .withDate(LocalDate.now())
                         .withAmount(BigDecimal.valueOf(faker.number().randomDouble(2, 100, 1000)))
                         .withClient(client)
                         .withStatus(faker.options().option(InvoiceStatus.class))
