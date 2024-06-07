@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 
 import java.util.List;
 import java.util.Random;
-
 @Component
 @Order(5)
 public class InvoicesRunner implements CommandLineRunner {
