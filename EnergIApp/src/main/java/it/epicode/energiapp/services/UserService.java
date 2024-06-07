@@ -9,6 +9,8 @@ import it.epicode.energiapp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +20,25 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+
+
+
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private PasswordEncoder bcrypt;
+
+
+    @Autowired private JavaMailSenderImpl javaMailSender;
+
+    private void sendMailRegistrazione(String email) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Registrazione Utente");
+        message.setText("Registrazione Utente avvenuta con successo");
+        javaMailSender.send(message);
+    }
 
     @Transactional(readOnly = true)
     public Page<User> getAllUsers(Pageable pageable) {
@@ -47,7 +63,7 @@ public class UserService {
         user.setEmail(userDto.email());
         user.setRole(Role.USER);
         user.setPassword(bcrypt.encode(userDto.password()));
-
+        sendMailRegistrazione(userDto.email());
         userRepository.save(user);
 
         return "User with id: " + user.getId() + " correctly saved";
@@ -97,4 +113,7 @@ public class UserService {
             throw new NotFoundException("User with email: " + email + " not found");
         }
     }
+
+
+
 }
